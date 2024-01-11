@@ -41,6 +41,12 @@ defmodule Rumbl.Accounts do
     |> Repo.insert()
   end
 
+  def register_user!(attrs \\ %{}) do
+    %User{}
+    |> User.registration_changeset(attrs)
+    |> Repo.insert(on_conflict: :nothing)
+  end
+
   def authenticate_ny_username_and_pass(username, given_pass) do
     user = get_user_by(username: username)
 
