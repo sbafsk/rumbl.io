@@ -26,7 +26,8 @@ import { Socket } from "phoenix";
 import { LiveSocket } from "phoenix_live_view";
 import topbar from "../vendor/topbar";
 
-import Player from "./player";
+import socket from "./socket";
+import Video from "./video";
 
 let csrfToken = document
   .querySelector("meta[name='csrf-token']")
@@ -50,10 +51,4 @@ liveSocket.connect();
 window.liveSocket = liveSocket;
 
 // Init Video API
-let video = document.getElementById("video");
-
-if (video) {
-  Player.init(video.id, video.getAttribute("data-player-id"), () => {
-    console.log(" ### Player Ready! ###");
-  });
-}
+Video.init(socket, document.getElementById("video"));
