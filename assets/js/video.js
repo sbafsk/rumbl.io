@@ -1,3 +1,5 @@
+import { Presence } from "phoenix";
+
 import Player from "./player";
 
 let Video = {
@@ -18,6 +20,7 @@ let Video = {
     let msgContainer = document.getElementById("msg-container");
     let msgInput = document.getElementById("msg-input");
     let postButton = document.getElementById("msg-submit");
+    let userList = document.getElementById("users-list");
     let lastSeenId = 0;
     let vidChannel = socket.channel("videos:" + videoId, () => {
       return { last_seen_id: lastSeenId };
@@ -67,6 +70,17 @@ let Video = {
         this.scheduleMessages(msgContainer, annotations);
       })
       .receive("error", (reason) => console.log("join failed", reason));
+
+    let presence = new Presence(vidChannel);
+
+    presence.onSync(() => {
+      userList.innerHTML = presence
+        .list((id, { user, metas: [first, ...rest] }) => {
+          let count = rest.length + 1;
+          return `<li>${user.username}: (${count})</li>`;
+        })
+        .join("");
+    });
   },
   renderAnnotation(msgContainer, { user, body, at }) {
     let template = document.createElement("div");
